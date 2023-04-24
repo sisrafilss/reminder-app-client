@@ -5,6 +5,7 @@ import Dialogbox from "../Dialogbox/Dialogbox";
 import axios from "axios";
 import useFirebase from "@/hooks/useFirebase";
 import Spinner from "../Spinner/Spinner";
+import Link from "next/link";
 
 const ReminderList = () => {
   const [reminders, setReminders] = useState([]);
@@ -20,7 +21,9 @@ const ReminderList = () => {
 
   useEffect(() => {
     axios
-      .get(`https://reminder-app-server.onrender.com/all-reminders/${user?.email}`)
+      .get(
+        `https://reminder-app-server.onrender.com/all-reminders/${user?.email}`
+      )
       .then((res) => {
         setReminders(res.data);
       });
@@ -66,82 +69,96 @@ const ReminderList = () => {
 
   return (
     <>
-      <div className="lg:w-2/3 mg:mx-auto md:w-3/4 md:mx-auto w-full md:px-7 px-0  mt-28 pb-10">
-        <div className="flex md:justify-between justify-around">
-          <h2 className="text-2xl font-bold">Task List</h2>
+      {!user?.email ? (
+        <p className="text-2xl text-center mt-28">
+          You are not Logged In. Please{" "}
+          <Link className="text-green-500" href="/login">
+            Login
+          </Link>{" "}
+          first to add your Reminder.
+        </p>
+      ) : (
+        <div className="lg:w-2/3 mg:mx-auto md:w-3/4 md:mx-auto w-full md:px-7 px-0  mt-28 pb-10">
+          <div className="flex md:justify-between justify-around">
+            <h2 className="text-2xl font-bold">Task List</h2>
 
-          <button
-            className="px-4 py-2 inline  bg-slate-600 text-white rounded font-medium text-base hover:bg-slate-700"
-            onClick={toggleAddModal}
-          >
-            Add New
-          </button>
-        </div>
-
-        {reminders.length === 0 ? (
-          <h2 className="text-4xl text-center mt-5">No Reminder Added Yet!</h2>
-        ) : (
-          <div className="w-full">
-            <table className="table-auto mt-6 w-full text-center border border-slate-400 min-w-fit">
-              <thead className="bg-gray-200">
-                <tr className="border">
-                  <th className="md:px-6 md:py-3 px-3 py-1 border ">Status</th>
-                  <th className="md:px-6 md:py-3 px-3 py-1 border ">#</th>
-                  <th className="md:px-6 md:py-3 px-3 py-1 border">Name</th>
-                  <th className="md:px-6 md:py-3 px-3 py-1 border">Date</th>
-                  <th className="md:px-6 md:py-3 px-3 py-1 border">Time</th>
-                  <th className="md:px-6 md:py-3 px-3 py-1 border">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reminders.map((reminder, idx) => (
-                  <tr
-                    key={idx}
-                    className={`${
-                      reminder?.status === "done" ? "my-line-through" : ""
-                    } hover:bg-slate-100`}
-                  >
-                    {reminder?.status === "done" ? (
-                      <td
-                        onClick={() => handleCompleteStatus(reminder?._id)}
-                        className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
-                      >
-                        <CheckIcon className="h-6 w-6 text-gray-500" />
-                      </td>
-                    ) : (
-                      <td
-                        onClick={() => handleCompleteStatus(reminder?._id)}
-                        className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
-                      >
-                        <ClockIcon className="h-6 w-6 text-gray-500" />
-                      </td>
-                    )}
-
-                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                      {idx + 1}
-                    </td>
-                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                      {reminder?.name}
-                    </td>
-                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                      {reminder?.date}
-                    </td>
-                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                      {reminder?.time}
-                    </td>
-                    <td className="md:px-6 md:py-3 px-3 py-1  border">
-                      <TrashIcon
-                        className="  text-red-600 mx-auto w-6 h-6 cursor-pointer"
-                        onClick={() => handleDeleteTask(reminder._id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <button
+              className="px-4 py-2 inline  bg-slate-600 text-white rounded font-medium text-base hover:bg-slate-700"
+              onClick={toggleAddModal}
+            >
+              Add New
+            </button>
           </div>
-        )}
-      </div>
+
+          {reminders.length === 0 ? (
+            <h2 className="text-4xl text-center mt-5">
+              No Reminder Added Yet!
+            </h2>
+          ) : (
+            <div className="w-full">
+              <table className="table-auto mt-6 w-full text-center border border-slate-400 min-w-fit">
+                <thead className="bg-gray-200">
+                  <tr className="border">
+                    <th className="md:px-6 md:py-3 px-3 py-1 border ">
+                      Status
+                    </th>
+                    <th className="md:px-6 md:py-3 px-3 py-1 border ">#</th>
+                    <th className="md:px-6 md:py-3 px-3 py-1 border">Name</th>
+                    <th className="md:px-6 md:py-3 px-3 py-1 border">Date</th>
+                    <th className="md:px-6 md:py-3 px-3 py-1 border">Time</th>
+                    <th className="md:px-6 md:py-3 px-3 py-1 border">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reminders.map((reminder, idx) => (
+                    <tr
+                      key={idx}
+                      className={`${
+                        reminder?.status === "done" ? "my-line-through" : ""
+                      } hover:bg-slate-100`}
+                    >
+                      {reminder?.status === "done" ? (
+                        <td
+                          onClick={() => handleCompleteStatus(reminder?._id)}
+                          className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
+                        >
+                          <CheckIcon className="h-6 w-6 text-gray-500" />
+                        </td>
+                      ) : (
+                        <td
+                          onClick={() => handleCompleteStatus(reminder?._id)}
+                          className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
+                        >
+                          <ClockIcon className="h-6 w-6 text-gray-500" />
+                        </td>
+                      )}
+
+                      <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                        {idx + 1}
+                      </td>
+                      <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                        {reminder?.name}
+                      </td>
+                      <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                        {reminder?.date}
+                      </td>
+                      <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                        {reminder?.time}
+                      </td>
+                      <td className="md:px-6 md:py-3 px-3 py-1  border">
+                        <TrashIcon
+                          className="  text-red-600 mx-auto w-6 h-6 cursor-pointer"
+                          onClick={() => handleDeleteTask(reminder._id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Add a new task modal */}
       {addModal && (
