@@ -10,19 +10,19 @@ const Dialogbox = ({
 }) => {
   const handleDeleteTask = () => {
     toggleDialogBox();
+    console.log(delTaskId);
 
     console.log(delTaskId);
-    // axios
-    //   .delete(`https://todo-server-lv0x.onrender.com/task-list/${delTaskId}`)
-    //   .then((res) => {
-    //     setDelTaskId("");
-    //     // if (res?.data?.insertedId) {
-    //     setShowSuccessMessage(true);
-    //     // }
-    //   })
-    //   .catch((error) => {
-    //     setShowErrorMessage(true);
-    //   });
+    axios
+      .delete(`http://localhost:5000/task-list/${delTaskId}`)
+      .then((res) => {
+        console.log(res.data);
+        setDelTaskId("");
+        setShowSuccessMessage(true);
+      })
+      .catch((error) => {
+        setShowErrorMessage(true);
+      });
   };
 
   return (

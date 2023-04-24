@@ -19,10 +19,12 @@ const ReminderList = () => {
   const { user } = useFirebase();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/all-reminders").then((res) => {
-      setReminders(res.data);
-    });
-  }, [marked, addModal]);
+    axios
+      .get(`http://localhost:5000/all-reminders/${user?.email}`)
+      .then((res) => {
+        setReminders(res.data);
+      });
+  }, [marked, addModal, delTaskId]);
 
   const toggleMark = () => {
     setMarked(!marked);
@@ -76,65 +78,69 @@ const ReminderList = () => {
           </button>
         </div>
 
-        <div className="w-full">
-          <table className="table-auto mt-6 w-full text-center border border-slate-400 min-w-fit">
-            <thead className="bg-gray-200">
-              <tr className="border">
-                <th className="md:px-6 md:py-3 px-3 py-1 border ">Status</th>
-                <th className="md:px-6 md:py-3 px-3 py-1 border ">#</th>
-                <th className="md:px-6 md:py-3 px-3 py-1 border">Name</th>
-                <th className="md:px-6 md:py-3 px-3 py-1 border">Date</th>
-                <th className="md:px-6 md:py-3 px-3 py-1 border">Time</th>
-                <th className="md:px-6 md:py-3 px-3 py-1 border">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reminders.map((reminder, idx) => (
-                <tr
-                  key={idx}
-                  className={`${
-                    reminder?.status === "done" ? "my-line-through" : ""
-                  } hover:bg-slate-100`}
-                >
-                  {reminder?.status === "done" ? (
-                    <td className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer">
-                      <CheckIcon
-                        onClick={() => handleCompleteStatus(reminder?._id)}
-                        className="h-6 w-6 text-gray-500"
-                      />
-                    </td>
-                  ) : (
-                    <td className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer">
-                      <ClockIcon
-                        onClick={() => handleCompleteStatus(reminder?._id)}
-                        className="h-6 w-6 text-gray-500"
-                      />
-                    </td>
-                  )}
-
-                  <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    {idx + 1}
-                  </td>
-                  <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    {reminder?.name}
-                  </td>
-                  <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    {reminder?.date}
-                  </td>
-                  <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    {reminder?.time}
-                  </td>
-                  <td className="md:px-6 md:py-3 px-3 py-1  border">
-                    <TrashIcon
-                      className="  text-red-600 mx-auto w-6 h-6 cursor-pointer"
-                      onClick={() => handleDeleteTask(idx)}
-                    />
-                  </td>
+        {reminders.length === 0 ? (
+          <h2 className="text-4xl text-center mt-5">No Reminder Added Yet!</h2>
+        ) : (
+          <div className="w-full">
+            <table className="table-auto mt-6 w-full text-center border border-slate-400 min-w-fit">
+              <thead className="bg-gray-200">
+                <tr className="border">
+                  <th className="md:px-6 md:py-3 px-3 py-1 border ">Status</th>
+                  <th className="md:px-6 md:py-3 px-3 py-1 border ">#</th>
+                  <th className="md:px-6 md:py-3 px-3 py-1 border">Name</th>
+                  <th className="md:px-6 md:py-3 px-3 py-1 border">Date</th>
+                  <th className="md:px-6 md:py-3 px-3 py-1 border">Time</th>
+                  <th className="md:px-6 md:py-3 px-3 py-1 border">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {reminders.map((reminder, idx) => (
+                  <tr
+                    key={idx}
+                    className={`${
+                      reminder?.status === "done" ? "my-line-through" : ""
+                    } hover:bg-slate-100`}
+                  >
+                    {reminder?.status === "done" ? (
+                      <td
+                        onClick={() => handleCompleteStatus(reminder?._id)}
+                        className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
+                      >
+                        <CheckIcon className="h-6 w-6 text-gray-500" />
+                      </td>
+                    ) : (
+                      <td
+                        onClick={() => handleCompleteStatus(reminder?._id)}
+                        className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer"
+                      >
+                        <ClockIcon className="h-6 w-6 text-gray-500" />
+                      </td>
+                    )}
+
+                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                      {idx + 1}
+                    </td>
+                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                      {reminder?.name}
+                    </td>
+                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                      {reminder?.date}
+                    </td>
+                    <td className="md:px-6 md:py-3 px-3 py-1 border ">
+                      {reminder?.time}
+                    </td>
+                    <td className="md:px-6 md:py-3 px-3 py-1  border">
+                      <TrashIcon
+                        className="  text-red-600 mx-auto w-6 h-6 cursor-pointer"
+                        onClick={() => handleDeleteTask(reminder._id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Add a new task modal */}
