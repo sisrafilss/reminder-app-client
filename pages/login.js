@@ -1,6 +1,29 @@
+import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 function Login() {
+  const route = useRouter();
+  const { loading, user, loginWithGoogle } = useFirebase();
+
+  //   handle sign-in using google
+  const handleGoogleLogin = () => {
+    loginWithGoogle();
+  };
+
+  //   handle login with email and password
+  const handleLoginWithEmailAndPassword = (email, password) => {
+
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (user) {
+    route.push("/");
+  }
+
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -47,6 +70,7 @@ function Login() {
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
                 type="button"
+                onClick={handleGoogleLogin}
               >
                 Login with Google
               </button>

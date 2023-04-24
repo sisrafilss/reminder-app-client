@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { MenuIcon, XIcon } from "@heroicons/react/solid";
 import { useState } from "react";
+import useFirebase from "@/hooks/useFirebase";
 
 const Header = () => {
   const [visible, setVisible] = useState(false);
-
+  const { user, logOut } = useFirebase();
   // handle mobile menu
   const handleMobileMenu = () => {
     setVisible(!visible);
+  };
+
+  const handleLogOut = () => {
+    logOut();
   };
 
   return (
@@ -38,14 +43,25 @@ const Header = () => {
           </Link>
         </li>
 
-        <li className="mx-4  mb-3">
-          <Link
-            href="login"
-            className="font-semibold hover:opacity-90 transition "
-          >
-            Login
-          </Link>
-        </li>
+        {user?.email ? (
+          <li className="mx-4  mb-3">
+            <span
+              className="font-semibold hover:opacity-90 transition cursor-pointer"
+              onClick={handleLogOut}
+            >
+              Logout
+            </span>
+          </li>
+        ) : (
+          <li className="mx-4  mb-3">
+            <Link
+              href="login"
+              className="font-semibold hover:opacity-90 transition "
+            >
+              Login
+            </Link>
+          </li>
+        )}
       </ul>
 
       <MenuIcon
