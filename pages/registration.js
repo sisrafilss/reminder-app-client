@@ -1,3 +1,4 @@
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -5,9 +6,14 @@ import { useForm } from "react-hook-form";
 
 const Registration = () => {
   const route = useRouter();
-  const { loading, user, loginWithGoogle, registration } = useFirebase();
-
-  
+  const {
+    loading,
+    user,
+    loginWithGoogle,
+    registration,
+    setAuthError,
+    authError,
+  } = useFirebase();
 
   //   handle sign-in using google
   const handleGoogleLogin = () => {
@@ -132,6 +138,12 @@ const Registration = () => {
               Login
             </Link>
           </div>
+        </div>
+        <div className="mt-4">
+          <ErrorMessage
+            errorMessage={authError}
+            setErrorMessage={setAuthError}
+          />
         </div>
       </div>
     </>

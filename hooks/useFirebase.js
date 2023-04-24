@@ -102,10 +102,12 @@ const useFirebase = () => {
     user,
     authError,
     loading,
+    authError,
     loginWithGoogle,
     logOut,
     loginUser,
     registration,
+    setAuthError,
   };
 };
 
