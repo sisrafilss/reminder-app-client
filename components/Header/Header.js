@@ -62,6 +62,15 @@ const Header = () => {
             </Link>
           </li>
         )}
+
+        {user?.email && (
+          <li className="mx-4  mb-3">
+            <span className="font-semibold hover:opacity-90 transition ">
+              Logged in as{" "}
+              <span className="text-green-400">{user?.displayName}</span>
+            </span>
+          </li>
+        )}
       </ul>
 
       <MenuIcon

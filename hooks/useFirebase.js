@@ -42,6 +42,53 @@ const useFirebase = () => {
       });
   };
 
+  // Register new user using email and password
+  const registration = (name, email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setAuthError("");
+
+        // // Set user to user state
+        // const newUser = { email, displayName: name };
+        // setUser(newUser);
+
+        // Set user to firebase
+        updateProfile(auth.currentUser, {
+          displayName: name,
+        })
+          .then(() => {
+            // navigate("/");
+          })
+          .catch((error) => {
+            setAuthError(error);
+          });
+      })
+      .catch((error) => {
+        setAuthError(error.message);
+      })
+      .finally(() => {
+        // setLoading(false);
+      });
+  };
+
+  // Login user using email and password
+  const loginUser = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        // const user = result.user;
+        // setUser(user);
+        setAuthError("");
+
+        // Redirect user where he/she wanted to go
+        // navigate("/");
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setAuthError(errorMessage);
+      })
+      .finally(() => {});
+  };
+
   // LogOut
   const logOut = () => {
     signOut(auth)
@@ -57,6 +104,8 @@ const useFirebase = () => {
     loading,
     loginWithGoogle,
     logOut,
+    loginUser,
+    registration,
   };
 };
 

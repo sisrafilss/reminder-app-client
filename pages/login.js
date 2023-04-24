@@ -1,10 +1,11 @@
 import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 function Login() {
   const route = useRouter();
-  const { loading, user, loginWithGoogle } = useFirebase();
+  const { loading, user, loginWithGoogle, loginUser } = useFirebase();
 
   //   handle sign-in using google
   const handleGoogleLogin = () => {
@@ -13,8 +14,19 @@ function Login() {
 
   //   handle login with email and password
   const handleLoginWithEmailAndPassword = (email, password) => {
+    loginUser(email, password);
+  };
 
-  }
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    console.log();
+    handleLoginWithEmailAndPassword(data.email, data.password);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -28,7 +40,10 @@ function Login() {
     <>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md">
-          <form className="bg-white shadow-lg rounded px-12 pt-6 pb-8 mb-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="bg-white shadow-lg rounded px-12 pt-6 pb-8 mb-4"
+          >
             <h2 className="text-2xl font-semibold mb-6">Login</h2>
             <div className="mb-4">
               <label
@@ -42,8 +57,11 @@ function Login() {
                 id="email"
                 type="email"
                 placeholder="Email"
-                required
+                {...register("email", { required: true })}
               />
+              {errors.email && (
+                <span className="text-yellow-600">This field is required</span>
+              )}
             </div>
             <div className="mb-6">
               <label
@@ -57,8 +75,11 @@ function Login() {
                 id="password"
                 type="password"
                 placeholder="Password"
-                required
+                {...register("password", { required: true })}
               />
+              {errors.password && (
+                <span className="text-yellow-600">This field is required</span>
+              )}
             </div>
 
             <div className="flex items-center justify-between">

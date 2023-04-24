@@ -1,14 +1,33 @@
 import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 const Registration = () => {
   const route = useRouter();
-  const { loading, user, loginWithGoogle } = useFirebase();
+  const { loading, user, loginWithGoogle, registration } = useFirebase();
+
+  
 
   //   handle sign-in using google
   const handleGoogleLogin = () => {
     loginWithGoogle();
+  };
+
+  //   handle registration using name, email, and passwrod
+  const handleRegistration = (name, email, password) => {
+    registration(name, email, password);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    console.log(data);
+    handleRegistration(data.fullName, data.email, data.password);
   };
 
   if (loading) {
@@ -25,7 +44,7 @@ const Registration = () => {
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <div className="bg-white rounded-lg shadow p-6 max-w-sm w-full">
           <h2 className="text-2xl font-semibold mb-6">Create an Account</h2>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div>
                 <label
@@ -39,8 +58,13 @@ const Registration = () => {
                   type="text"
                   className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Enter your full name"
-                  required
+                  {...register("fullName", { required: true })}
                 />
+                {errors.fullName && (
+                  <span className="text-yellow-600">
+                    This field is required
+                  </span>
+                )}
               </div>
 
               <div>
@@ -55,8 +79,13 @@ const Registration = () => {
                   type="email"
                   className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Enter your email address"
-                  required
+                  {...register("email", { required: true })}
                 />
+                {errors.email && (
+                  <span className="text-yellow-600">
+                    This field is required
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -70,8 +99,14 @@ const Registration = () => {
                   type="password"
                   className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Enter your password"
-                  required
+                  {...register("password", { required: true })}
                 />
+                {errors.password && (
+                  <span className="text-yellow-600">
+                    {" "}
+                    This field is required
+                  </span>
+                )}
               </div>
             </div>
 
