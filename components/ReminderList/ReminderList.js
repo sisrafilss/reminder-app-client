@@ -22,7 +22,7 @@ const ReminderList = () => {
     axios.get("http://localhost:5000/all-reminders").then((res) => {
       setReminders(res.data);
     });
-  }, [marked]);
+  }, [marked, addModal]);
 
   const toggleMark = () => {
     setMarked(!marked);

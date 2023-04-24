@@ -1,3 +1,4 @@
+import useFirebase from "@/hooks/useFirebase";
 import { XIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,8 @@ const AddTask = ({
   setShowSuccessMessage,
   setShowErrorMessage,
 }) => {
+  const { user } = useFirebase();
+
   const {
     register,
     handleSubmit,
@@ -16,19 +19,21 @@ const AddTask = ({
   const onSubmit = (data) => {
     console.log(data);
 
-    // const addEmail = { email: user?.email, ...data };
-    // axios
-    //   .post("https://todo-server-lv0x.onrender.com/add-task", addEmail)
-    //   .then((res) => {
-    //     if (res?.data?.insertedId) {
-    //       toggleAddModal();
-    //       setShowSuccessMessage(true);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     toggleAddModal();
-    //     setShowErrorMessage(true);
-    //   });
+    const addEmail = { email: user?.email, ...data, status: "pending" };
+    axios
+      .post("http://localhost:5000/add-task", addEmail)
+      .then((res) => {
+        console.log(res.data);
+        if (res?.data?.insertedId) {
+          console.log(res.data);
+          toggleAddModal();
+          setShowSuccessMessage(true);
+        }
+      })
+      .catch((error) => {
+        toggleAddModal();
+        setShowErrorMessage(true);
+      });
   };
 
   return (
