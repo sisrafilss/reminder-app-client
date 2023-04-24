@@ -20,7 +20,7 @@ const ReminderList = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/all-reminders/${user?.email}`)
+      .get(`https://reminder-app-server.onrender.com/all-reminders/${user?.email}`)
       .then((res) => {
         setReminders(res.data);
       });
@@ -36,7 +36,7 @@ const ReminderList = () => {
 
     axios
       .put(
-        `http://localhost:5000/update-reminder-status?email=${user?.email}&id=${id}`,
+        `https://reminder-app-server.onrender.com/update-reminder-status?email=${user?.email}&id=${id}`,
         updatedTask
       )
       .then((res) => {

@@ -21,7 +21,7 @@ const AddTask = ({
 
     const addEmail = { email: user?.email, ...data, status: "pending" };
     axios
-      .post("http://localhost:5000/add-task", addEmail)
+      .post("https://reminder-app-server.onrender.com/add-task", addEmail)
       .then((res) => {
         console.log(res.data);
         if (res?.data?.insertedId) {

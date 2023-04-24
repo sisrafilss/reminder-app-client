@@ -14,7 +14,7 @@ const Dialogbox = ({
 
     console.log(delTaskId);
     axios
-      .delete(`http://localhost:5000/task-list/${delTaskId}`)
+      .delete(`https://reminder-app-server.onrender.com/task-list/${delTaskId}`)
       .then((res) => {
         console.log(res.data);
         setDelTaskId("");
