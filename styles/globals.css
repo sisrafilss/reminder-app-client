@@ -5,3 +5,7 @@
 .menu-transition {
   transition: 0.3s;
 }
+
+.my-line-through td {
+  text-decoration: line-through;
+}
