@@ -7,7 +7,12 @@ const AddTask = ({
   setShowSuccessMessage,
   setShowErrorMessage,
 }) => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   const onSubmit = (data) => {
     console.log(data);
 
@@ -36,33 +41,46 @@ const AddTask = ({
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col ">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Name
-        </label>
-        <input
-          className="border px-3 text-black opacity-90 py-2 mb-5 rounded w-full focus:outline-none"
-          type="text"
-          placeholder="Name"
-          {...register("title")}
-        />
+        <div className="mb-5">
+          <label className="block text-gray-700 text-sm font-bold ">Name</label>
+          <input
+            className="border px-3 text-black opacity-90 py-2 rounded w-full focus:outline-none"
+            type="text"
+            placeholder="Name"
+            {...register("name", { required: true })}
+          />
+          {errors.name && (
+            <span className="text-yellow-600">This field is required</span>
+          )}
+        </div>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Pick Date
-        </label>
-        <input
-          className="border px-3 py-2 mb-5 text-black opacity-90 rounded w-full focus:outline-none"
-          type="date"
-          {...register("date")}
-        />
+        <div className="mb-5">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Pick Date
+          </label>
+          <input
+            className="border px-3 py-2  text-black opacity-90 rounded w-full focus:outline-none"
+            type="date"
+            {...register("date", { required: true })}
+          />
+          {errors.date && (
+            <span className="text-yellow-600">This field is required</span>
+          )}
+        </div>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Choose Time
-        </label>
-        <input
-          className="border px-3 py-2 mb-5 text-black opacity-90 rounded w-full focus:outline-none"
-          type="time"
-          {...register("time")}
-        />
+        <div className="mb-5">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Choose Time
+          </label>
+          <input
+            className="border px-3 py-2  text-black opacity-90 rounded w-full focus:outline-none"
+            type="time"
+            {...register("time", { required: true })}
+          />
+          {errors.time && (
+            <span className="text-yellow-600">This field is required</span>
+          )}
+        </div>
 
         <input
           type="submit"

@@ -1,9 +1,13 @@
 import { TrashIcon, ClockIcon, CheckIcon } from "@heroicons/react/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddTask from "../AddTask/AddTask";
 import Dialogbox from "../Dialogbox/Dialogbox";
+import axios from "axios";
+import useFirebase from "@/hooks/useFirebase";
+import Spinner from "../Spinner/Spinner";
 
 const ReminderList = () => {
+  const [reminders, setReminders] = useState([]);
   const [marked, setMarked] = useState(false);
   const [modalActive, setModalActive] = useState(false);
   const [addModal, setAddModal] = useState(false);
@@ -12,8 +16,32 @@ const ReminderList = () => {
   const [dialogBox, setDialogBox] = useState(false);
   const [delTaskId, setDelTaskId] = useState("");
 
+  const { user } = useFirebase();
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/all-reminders").then((res) => {
+      setReminders(res.data);
+    });
+  }, [marked]);
+
   const toggleMark = () => {
     setMarked(!marked);
+  };
+
+  // handle task complete status
+  const handleCompleteStatus = (id) => {
+    const updatedTask = reminders.find((task) => task._id === id);
+
+    axios
+      .put(
+        `http://localhost:5000/update-reminder-status?email=${user?.email}&id=${id}`,
+        updatedTask
+      )
+      .then((res) => {
+        if (res.data?.modifiedCount) {
+          toggleMark(!marked);
+        }
+      });
   };
 
   // handle toggle add task modal
@@ -61,24 +89,24 @@ const ReminderList = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 10 }, (_, i) => i).map((idx) => (
+              {reminders.map((reminder, idx) => (
                 <tr
                   key={idx}
                   className={`${
-                    marked ? "my-line-through" : ""
+                    reminder?.status === "done" ? "my-line-through" : ""
                   } hover:bg-slate-100`}
                 >
-                  {marked ? (
+                  {reminder?.status === "done" ? (
                     <td className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer">
                       <CheckIcon
-                        onClick={toggleMark}
+                        onClick={() => handleCompleteStatus(reminder?._id)}
                         className="h-6 w-6 text-gray-500"
                       />
                     </td>
                   ) : (
                     <td className="md:px-6 md:py-3 px-3 py-1 border mx-auto w-6 h-6 cursor-pointer">
                       <ClockIcon
-                        onClick={toggleMark}
+                        onClick={() => handleCompleteStatus(reminder?._id)}
                         className="h-6 w-6 text-gray-500"
                       />
                     </td>
@@ -88,13 +116,13 @@ const ReminderList = () => {
                     {idx + 1}
                   </td>
                   <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    Do Assignemnt
+                    {reminder?.name}
                   </td>
                   <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    13 April 2023
+                    {reminder?.date}
                   </td>
                   <td className="md:px-6 md:py-3 px-3 py-1 border ">
-                    11:00 PM
+                    {reminder?.time}
                   </td>
                   <td className="md:px-6 md:py-3 px-3 py-1  border">
                     <TrashIcon

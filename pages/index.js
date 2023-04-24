@@ -1,5 +1,6 @@
 import Header from "@/components/Header/Header";
 import ReminderList from "@/components/ReminderList/ReminderList";
+import Spinner from "@/components/Spinner/Spinner";
 import useFirebase from "@/hooks/useFirebase";
 import { Inter } from "next/font/google";
 
